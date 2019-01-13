@@ -11,9 +11,7 @@ namespace CSVService
     {
         public static void ReadCsv(string path)
         {
-            DataTable dt = new DataTable();
             
-
         }
 
 
