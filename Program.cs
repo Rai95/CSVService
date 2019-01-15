@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using System.IO;
 
 namespace CSVService
@@ -13,22 +8,48 @@ namespace CSVService
     {
         static void Main(string[] args)
         {
+            DataTable table = new DataTable("TestTable");
+
             //Test for StreamReader
             StreamReader sr = new StreamReader("Test.csv");
+            if (sr == null) return;
+            int columnCount = 0;
             string line = sr.ReadLine();
             if(line!=null)
             {
                 string[] columnNames = line.Split(',');
                 foreach(string name in columnNames)
                 {
-                    Console.WriteLine(name);
+                    DataColumn newColumn = new DataColumn(name, typeof(string));
+                    table.Columns.Add(newColumn);
                 }
+                columnCount = columnNames.Length;
             }
-            while(line!=null)
+            line = sr.ReadLine();
+            while (line!=null)
             {
-                Console.WriteLine(line);
+                string[] columnValues = line.Split(',');
+                if (columnValues.Length != columnCount)
+                    continue;
+                DataRow newRow = table.NewRow();
+                for(int i=0;i<columnValues.Length;++i)
+                {
+                    newRow[i] = columnValues[i];
+                }
+                table.Rows.Add(newRow);
                 line = sr.ReadLine();
             }
+
+            foreach(DataRow row in table.Rows)
+            {
+                foreach(object o in row.ItemArray)
+                {
+                    Console.Write(o);
+                    Console.Write(",");
+                }
+                Console.WriteLine();
+            }
+
 
 
 
